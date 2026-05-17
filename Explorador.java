@@ -1,3 +1,4 @@
+import java.util.concurrent.Semaphore;
 
 /**
  * Classe abstrata que representa um explorador na Caça ao Tesouro Paralela.
@@ -8,14 +9,16 @@ public abstract class Explorador {
     private String nome;
     private String tipo;
     private int prioridade;
-    private String tarefa;
+    private Tarefa tarefa;
+    protected Semaphore semaforo;
 
     // * Construtor que inicializa todos os atributos do explorador.
-    public Explorador(String nome, String tipo, int prioridade, String tarefa) {
+    public Explorador(String nome, String tipo, int prioridade, Tarefa tarefa, Semaphore semaforo) {
         this.nome = nome;
         this.tipo = tipo;
         this.prioridade = prioridade;
         this.tarefa = tarefa;
+        this.semaforo = semaforo;
     }
 
     public String getNome() {
@@ -30,7 +33,7 @@ public abstract class Explorador {
         return prioridade;
     }
 
-    public String getTarefa() {
+    public Tarefa getTarefa() {
         return tarefa;
     }
 

@@ -1,3 +1,5 @@
+import java.util.concurrent.Semaphore;
+
 /**
  * Explorador rápido que executa tarefas com alta velocidade e eficiência.
  * Implementa Runnable para execução em thread separada.
@@ -5,8 +7,8 @@
 public class ExploradorRapido extends Explorador implements Runnable {
 
     // * Construtor do explorador rápido.
-    public ExploradorRapido(String nome, int prioridade, String tarefa) {
-        super(nome, "Rápido", prioridade, tarefa);
+    public ExploradorRapido(String nome, int prioridade, Tarefa tarefa, Semaphore semaforo) {
+        super(nome, "Rápido", prioridade, tarefa, semaforo);
     }
 
     /**
@@ -17,10 +19,26 @@ public class ExploradorRapido extends Explorador implements Runnable {
      */
     @Override
     public void executarTarefa() throws TarefaInvalidaException {
-        if (getTarefa() == null || getTarefa().isEmpty()) {
+        if (getTarefa() == null || getTarefa().getDescricao().isEmpty()) {
             throw new TarefaInvalidaException("A tarefa não pode ser nula ou vazia.");
         }
-        System.out.println(getNome() + " está executando a tarefa: " + getTarefa() + " com rapidez!");
+        try {
+            semaforo.acquire();
+
+            System.out.println(getNome() + " começou a tarefa.");
+
+            System.out
+                    .println(getNome() + " está executando a tarefa: " + getTarefa().getDescricao() + " com rapidez!");
+
+            Thread.sleep(2000);
+
+            System.out.println(getNome() + " terminou a tarefa.");
+
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } finally {
+            semaforo.release();
+        }
     }
 
     /**
